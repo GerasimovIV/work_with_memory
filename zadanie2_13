@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+
+typedef struct list // первый элемент будет служебным
+{
+    int a;
+    struct list* next;
+    struct list* prev;
+}list;
+
+
+list* list_new()
+{
+   list* el = malloc(sizeof(list));
+   list* sled = malloc(sizeof(list));
+   el->a = NULL;
+   el->next = NULL;
+   el->prev = NULL;
+   return el;
+}
+
+
+
+void push(list* li,int b)
+{
+    while(li->next != NULL)
+    {
+        li = li->next;
+    }
+    list* el1 = malloc(sizeof(list));
+    el1->next = NULL;
+    el1->prev = li;
+    li->next = el1;
+    el1->a = b;
+
+    return 0;
+}
+
+void print_list(list* a)
+{
+    list* el = a->next;
+    while(el != NULL)
+    {
+        printf("value = %d\n", el->a);
+        el = el->next;
+    }
+}
+
+
+list* pop(list* li)
+{
+    li = li->next;
+    while(li->next != NULL)
+    {
+        li = li->next;
+    }
+    return li;
+}
+
+void unshift(list* li, int b)
+{
+
+    list* first = malloc(sizeof(list));
+    if (li->next != NULL)
+    {
+        list* second = li->next;
+        first->next = second;
+        first->prev = li;
+        first->a = b;
+        second->prev = first;
+        li->next = first;
+        return 0;
+    }
+    first->a = b;
+    first->next = NULL;
+    first->prev = li;
+    li->next = first;
+    return 0;
+}
+
+int main()
+{
+
+    list* r = list_new();
+    int i;
+    for (i = 0; i < 10; i++)
+    {
+        push(r, i);
+    }
+    print_list(r);
+    list* e;
+    e = pop(r);
+    printf("%d\n", e->a);
+    printf("сейчас добавим новый элемент в начало\n");
+    unshift(r, 99);
+    print_list(r);
+    printf("сейчас добавим новый элемент в начало при условии что список пустой\n");
+    list* a = list_new();
+    unshift(a, 101);
+    print_list(a);
+    printf("удаляем список");
+    return 0;
+}
