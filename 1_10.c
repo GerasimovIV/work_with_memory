@@ -1,31 +1,43 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-
+#include <string.h>
 
 typedef struct book // первый элемент будет служебным
+
 {
+
     char name[50];
+
     char number[50];
+
     struct book* next;
+
     struct book* prev;
+
 }book;
 
-
 book* book_new() // просто создаем записную книжку, те первый служебный элемент
+
 {
+
    book* el = malloc(sizeof(book));
+
    char n1[1], n2[1];
+
    n1[0] = "f";
+
    n2[0] = "f";
+
    strcpy(el->name, n1);
+
    strcpy(el->number, n2);
+
    el->next = NULL;
+
    el->prev = NULL;
+
    return el;
 }
-
-
 
 void print_book(book* a)
 {
@@ -36,13 +48,14 @@ void print_book(book* a)
         el = el->next;
     }
 }
+
 void add_new_person(book* li, char* nam, char* num)// если добавляют существующее имя то меняем старый телефон на новый и пишем об этом
 {
     while(li->next != NULL)
     {
         if (strcmp(li->name, nam) == 0)
         {
-            char mas[50];
+            char mas[50] = {0};
             strcpy(mas, li->number);
             strcpy(li->number, num);
             printf("Change. Old value = %s\n", mas);
@@ -52,13 +65,12 @@ void add_new_person(book* li, char* nam, char* num)// если добавляю�
     }
     if ((li->next == NULL) && strcmp(li->name, nam) == 0)
     {
-        char mas[50];
+        char mas[50] = {0};
         strcpy(mas, li->number);
         strcpy(li->number, num);
         printf("Change. Old value = %s\n", mas);
         return 0;
     }
-
     book* el1 = malloc(sizeof(book));
     el1->next = NULL;
     el1->prev = li;
@@ -67,22 +79,21 @@ void add_new_person(book* li, char* nam, char* num)// если добавляю�
     strcpy(el1->number, num);
     return 0;
 }
+
 void find_person(book* b, char* na)
 {
     while ((b->next != NULL) && (strcmp(na, b->name) != 0))
     {
         b = b->next;
     }
-    if ((b->next == NULL) && (strcmp(na, b->name) != 0))
+    if (strcmp(na, b->name) != 0)
     {
-        printf("NO\n");
+        puts("NO");
         return 0;
     }
     printf("%s\n", b->number);
-
     return 0;
 }
-
 
 int main()
 {
@@ -94,11 +105,13 @@ int main()
     insert[3] = 'E';
     insert[4] = 'R';
     insert[5] = 'T';
+    insert[6] = '\0';
     char find[5];
     find[0] = 'F';
     find[1] = 'I';
     find[2] = 'N';
     find[3] = 'D';
+    find[4] = '\0';
     char a[100];
     //file descriptor (указатель на файл
     FILE* in_fd;
@@ -107,11 +120,11 @@ int main()
         printf("Can not open file!\n");
         return -1;
     }
-    while (fscanf(in_fd, "%s", &a[0]) != EOF)
+    while (fgets(a, 100, in_fd))
     {
         //читаем первое слово-команду
         int i = 0;
-        char comanda[10];
+        char comanda[10] = {0};
         while (a[i] != ' ')
         {
             comanda[i] = a[i];
@@ -129,6 +142,7 @@ int main()
                 i += 1;
                 j += 1;
             }
+            no_name[j] = '\0';
             // выполняем поиск
             find_person(book1, no_name);
         }
@@ -143,6 +157,7 @@ int main()
                 i += 1;
                 j += 1;
             }
+            n_name[j] = '\0';
             i += 1;
             //читаем номер
             j = 0;
@@ -153,17 +168,11 @@ int main()
                 i += 1;
                 j += 1;
             }
+            n_number[j] = '\0';
             //выполняем команду insert
             add_new_person(book1, n_name, n_number);
         }
-
-
     }
-
-
     fclose(in_fd);
-
-
-
     return 0;
 }
